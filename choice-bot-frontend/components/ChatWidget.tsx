@@ -94,11 +94,10 @@ export default function ChatWidget() {
   // This make it ideal for those values for storing things that are needed throughout the component's life.
   const recorderRef = useRef<MicRecorder | null>(null);
   // useRef<MicRecorder | null>(null) - Intializes the reference to null. It will hold the MicRecorder object once its created, so its method can be called(eg. to start/stop recording)
-  const messageEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   // useRef<HTMLDivElement>(null) - Intializes the ref. to null which will be attached to <div> in the JSX, allowing the componemt to programmatically scrool to the bottom of the message list whenever a new message is added.
-}
 
-// =- WebSocket Connection Handling --
+// -- WebSocket Connection Handling --
 // useEffect hook runs the contained function after 1st renders & subsequent renders, depending on its dependency array.
 // In this case, the hook runs once when the component mounts becoz it is missing a dependency array & returns a cleanup function that handles component unmount.
 // Side effects like establishing a WebSocket connection should be handled inside useEffect to avoid issues like memory leaks or re-connecting connections on every render.
@@ -109,7 +108,7 @@ useEffect(() => {
 
     socket.onopen = () => { // The onopen event is the right place to perform actions that depend on a successful connection.
       console.log("WebSocket connection established.");
-      setWS(socket); // It stores the active 'socket' object ib the component's state using setWs().
+      setWs(socket); // It stores the active 'socket' object ib the component's state using setWs().
     };
 
     socket.onmessage = event => { // It triggers whenever the client receives a message from the server.
@@ -171,7 +170,7 @@ useEffect(() => {
 
 // -- Core Actions --
 const handleSendMessage = () => { // This function is responsible for processing abd sending a user's text input. It gets triggered when a user hits enter or click on send button.
-  if (!inputValue.trim() || !ws || ws.readystate ! == WebSocket.OPEN) return; // Its a guard clause that performs the checks to ensure that message can be sent safely. The 'return' statement immediately exits if any condition is true.
+  if (!inputValue.trim() || !ws || ws.readyState ! == WebSocket.OPEN) return; // Its a guard clause that performs the checks to ensure that message can be sent safely. The 'return' statement immediately exits if any condition is true.
   // !inputValue.trim() - Checks if the inputValue state variable is empty or contains only whitespace. The .trim() method removes leading and trailing whitespace.
   // !ws - Checks if the WebSocket connection object (ws) is null, meaning a connection has not been established yet.
   // ws.readyState !== WebSocket.OPEN: Checks if the WebSocket connection is in the OPEN state. It prevents sending messages while the connection is still connecting, closing, or already closed.
@@ -242,77 +241,98 @@ const handleMicClick = () => { // This function servers as a single event handle
   }
 }; 
 
-return (
-    <div className="fixed bottom-4 right-4 w-full max-w-md font-sans">
-      {isOpen ? (
-        <div className="flex flex-col h-[600px] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+return ( // In a React component, return is what provides the markup that React will render to the DOM.
+    // This block of JSX code renders the header section of the chat widget, which contains title, bot status and control buttons.
+    // It uses conditional rendering to show the full chat interface only when the isOpen is true.
+    <div className="fixed bottom-4 right-4 w-full max-w-md font-sans"> {/* Outermost container of entire chat widget */}
+    {/* w-full max-w-md - Sets the width to 100% on small screens but caps it max. if md(448px), preventing it from becoming too large on desktop displays 
+        fixed: Positions the element relative to the browser window.
+        bottom-4 right-4: Places the widget 1rem (4 * 0.25rem) from the bottom and right edges of the viewport.*/}
+      {isOpen ? ( // This is conditional rendering statement using a ternary operator. It checks if isOpen is true and if it is, it renders the JSX that follows.
+        <div className="flex flex-col h-[600px] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"> {/* This is the container for chat panel 
+        flex flex-col - Uses Flexbox to arrange child elements(header, messages, footer) in a vertical column
+        rounded-xl - Applies large, rounded corners to the container.
+        shadow-2xl - Applies a strong drop shadow to make the widget stand out.
+        overflow-hidden - Hides any content that might overflow the container, ensuring the rounded corners work correctly.*/}
           {/* Header */}
-          <header className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Choice Bot Assistant</h3>
-              <p className="text-xs text-green-600 font-medium">Online</p>
+          <header className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200"> {/* flex items-center justify-between - Uses Flexbox to align items vertically and place them on opposite ends of the header.
+          p-4: Adds padding. border-b border-gray-200: Adds a bottom border to separate the header from the message area.*/}
+            <div> {/* This div contains the bot's names and online status. */}
+              <h3 className="text-lg font-bold text-gray-800">Choice Bot Assistant</h3> {/*text-lg font-bold text-gray-800 - Tailwind classes for styling the text.*/}
+              <p className="text-xs text-green-600 font-medium">Online</p> 
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3"> {/* div groups the action buttons on the right side of the header */}
               <button
-                onClick={handleLanguageToggle}
-                className="p-2 rounded-full hover:bg-gray-200 text-gray-600 transition-colors"
-                title={`Switch to ${currentLanguage === "en" ? "Hindi" : "English"}`}
+                onClick={handleLanguageToggle} // A button for toggling the language.
+                className="p-2 rounded-full hover:bg-gray-200 text-gray-600 transition-colors" 
+                title={`Switch to ${currentLanguage === "en" ? "Hindi" : "English"}`} // A dynamic title that provides a tooltip based on the current language state.
               >
-                <FiGlobe className="w-5 h-5" />
+                <FiGlobe className="w-5 h-5" /> {/* Renders the globe icon from the react-icons/fi library. */}
               </button>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => setIsOpen(false)} // Uses an inline arrow function to call setIsOpen state setter with false, hiding the chat panel.
                 className="p-2 rounded-full hover:bg-gray-200 text-gray-600 transition-colors"
-                title="Close chat"
+                title="Close chat" /* Provides a tooltip for the button. */
               >
-                <FiX className="w-5 h-5" />
+                <FiX className="w-5 h-5" /> {/* Renders the "X" icon for closing the chat widget. */}
               </button>
             </div>
           </header>
 
           {/* Message Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100/50">
-            {messages.map((msg, index) => (
-              <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100/50"> {/* This div contains the list of messages. It uses several tailwind CSS classes for styling. 
+          flex-1 - This utility takes up all available vertical space within its parent container(flex flex-col), pushing the input are to the bottom.
+          overflow-y-auto - It enables vertical scrolling if the message exceeds the container's height
+          space-y-4 - Adds vertical spcaing between each message element */}
+            {messages.map((msg, index) => ( // Its JS map() function called on messages array. It loops through every msg obejct in the array adn runs the code for each one.
+              <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}> {/* This is the container for a single message bubble. 
+              key={index} - It is a special attribute that React uses to tack rach element in the list. It helps React to identify which items have been changed,added or deleted which optimizes performance.
+              In production, instead of index use a unique ID for each message would be better taht supports deleting or reordering messages.
+              ${msg.sender === "user" ? "justify-end" : "justify-start"}: This is a template literal with a ternary operator. It checks the sender property of the msg object.
+              If sender is is "user", the justify-end class will be added and message bubble will be aligned to the right side of the container. 
+              If sender is is "bot", the justify-start class will be added and message bubble will be aligned to the left side of the container.*/}
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 shadow-sm ${
-                    msg.sender === "user"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-gray-800 border border-gray-100"
+                  className={`max-w-[80%] rounded-lg px-4 py-2 shadow-sm ${ // max-w-[80%] - It ensures the message bubble doesn't take up more than 80% of chat window's width.
+                    // shadow-sun -  Applies a small drop shadow for a subtle visual effect.
+                    msg.sender === "user" // Another ternary operator which will apply different background colors and text colors based on the sender.
+                      ? "bg-blue-600 text-white" // User messages - A solid blue background with white text.
+                      : "bg-white text-gray-800 border border-gray-100" // Bot messages - A white background with gray text and a light gray border. 
                   }`}
                 >
-                  <p className="text-sm">{msg.text}</p>
+                  <p className="text-sm">{msg.text}</p> {/* This p element displays the actual text content of the message. The {msg.text} part is a JSX expression that inserts the text property of the current msg object. */}
                 </div>
               </div>
             ))}
-            <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} /> {/* This is the empty div element. 
+            This attaches the messagesEndRef created with useRef to this element. The useEffect hook that handles scrolling uses this ref to scroll the container to this element's position, ensuring the chat stays at the bottom.*/}
           </div>
 
-          {/* Input Area */}
-          <footer className="border-t border-gray-200 p-3 bg-white">
-            <div className="flex items-center space-x-2">
+          {/* Input Area */} {/* This code block renders the input area of chat widget, includingtext input field, mic button and send button. It also handles the conditional rendering of an open/close button for the entire widget. */}
+          <footer className="border-t border-gray-200 p-3 bg-white"> {/* Defines bottom section of the chat panel. border-t border-gray-200 - It adds a top border to visually spearate it from message area. */}
+            <div className="flex items-center space-x-2"> {/* This div acts as flex container for the input field and buttons. */}
               <input
                 type="text"
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
-                onKeyPress={e => e.key === "Enter" && handleSendMessage()}
-                placeholder={isRecording ? "Listening..." : "Type your message..."}
+                value={inputValue} // It sets the input's value to the inputValue state.
+                onChange={e => setInputValue(e.target.value)} // Updates the inputValue state every time the user types. 
+                // The e.target.value gets the current content of the input field.
+                onKeyPress={e => e.key === "Enter" && handleSendMessage()} // Triggers the 'handleSendMessage()' function when user presses enter key inside the input field.
+                placeholder={isRecording ? "Listening..." : "Type your message..."} // Dynamically changes the placeholder text based on the isRecording state.
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                disabled={isRecording}
+                disabled={isRecording} // Disables the input field when isRecording is True, preventing user from typing while a voice recording is in progress. 
               />
               <button
-                onClick={handleMicClick}
+                onClick={handleMicClick} // Triggers the handleMicClick function, which toggles between starting and stopping the recording.
                 className={`p-3 rounded-full transition-colors focus:outline-none ${
-                  isRecording
-                    ? "bg-red-500 text-white animate-pulse"
-                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                  isRecording // Dynamically applies different styles based on the isRecording state using a template.
+                    ? "bg-red-500 text-white animate-pulse" // If isRecording is true: The button turns red (bg-red-500), the text turns white (text-white), and it gets a pulsing animation (animate-pulse).
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-700" // If isRecording is false: It has a light gray background (bg-gray-200) and darker text (text-gray-700).
                 }`}
               >
-                <FiMic className="w-5 h-5" />
+                <FiMic className="w-5 h-5" /> {/* Renders the microphone icon inside the microphone button. */}
               </button>
               <button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim()}
+                onClick={handleSendMessage} // Calls the handleSendMessage function when clicked.
+                disabled={!inputValue.trim()} // Disables the button if the inputValue is empty or contains only whitespaces. This prevents the user from sending an empty message.
                 className="p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors focus:outline-none"
               >
                 <FiSend className="w-5 h-5" />
@@ -320,19 +340,26 @@ return (
             </div>
           </footer>
         </div>
-      ) : (
+      ) : ( // This is the else part of the conditional rendering. It is executed if isOpen is false.
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => setIsOpen(true)} // When clicked, it sets the isOpen state to true, which causes the main chat panel to render.
           className="p-4 bg-blue-600 rounded-full shadow-lg text-white hover:bg-blue-700 transition-transform hover:scale-105"
         >
-          <FiVolume2 className="w-8 h-8" />
+          <FiVolume2 className="w-8 h-8" /> {/* Renders a speaker icon for the closed chat button. */}
         </button>
       )}
       {/* Audio player logic */}
-      {audioQueue.length > 0 && (
-        <AutoPlayingAudioPlayer
-            src={audioQueue[0]}
+      {/* It implements a queuing system for audio messages from the bot, ensuring they are played one at a time in the order they were received. */}
+      {audioQueue.length > 0 && ( // This is the conditional rendering statement and the expression on the left is evaluated first.
+      // If the audioQueue array contains at least one item, the expression is true and React proceeds to evaluate and render the JSX on the right side.
+      // If the audioQueue is empty (length is 0), the expression is false and React renders nothing so AutoPlayingAduioPlayer is not rendered.
+        <AutoPlayingAudioPlayer // This renders the AutoPlayingAudioPlayer component defined earlier. 
+            src={audioQueue[0]} // This is the first item in the audioQueue & it uses src prop to laod and play audio file.
+            // By always passing the first item in the queue, we ensure a sequence of playback. THe useEffect hoook inside this function is configured to trigger playback whenever the src prop changes.
             key={audioQueue[0]} // Re-render component when src changes
+            // When React renders the list of components, it uses the key prop to determine which items are new, changed or removed. Even though it's a list, using dynamic key force React to unmount and mount the AutoPlayingAudioPlayer whenever src changes.
+            // By changing the key, it ensures that a new component is created which is reliable way to reset the component's internal state & force a fresh audio stream.
+            // It helps to prevent issues with the audio player continuing to play an old stream or behaving unexpectedly.  
         />
       )}
     </div>
