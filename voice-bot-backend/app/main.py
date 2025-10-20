@@ -120,7 +120,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
         return
 
     # 2. Send initial greeting (handle bytes or path)
-    initial_greeting = "Hello! My name is CHOICE, how can I assist you today?"
+    initial_greeting = "Hello! My name is VOICE, how can I assist you today?"
     try:
         tts_result = await audio_service.generate_speech_audio(initial_greeting, session_data["language"])
         # If bytes -> base64; if string -> treat as url/path
