@@ -1,0 +1,9 @@
+/* file: app/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bot-message {
+  white-space: pre-wrap; /* preserve line breaks */
+}

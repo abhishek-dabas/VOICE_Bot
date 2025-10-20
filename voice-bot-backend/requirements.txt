@@ -1,0 +1,27 @@
+# --- Core Web Framework ---
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+
+# --- LangChain & Google Gemini ---
+langchain
+langchain-google-genai
+langchain-community
+google-generativeai
+
+# --- Vector Database & Embeddings ---
+chromadb
+sentence-transformers
+
+# --- Audio Processing ---
+openai-whisper
+gTTS
+docx2txt
+
+# --- Document Loaders ---
+pypdf
+python-docx
+
+# --- Environment Variables ---
+python-dotenv

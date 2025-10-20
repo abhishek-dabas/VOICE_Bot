@@ -9,8 +9,8 @@ export default function Home() { // It defines functional React component named 
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-50"> {/* In React, className is used instaed of class 
     This styling centers the page content, including chat widget and title. */}
       <div className="text-center"> {/* A div that acts as a container for the page's centered text */}
-        <h1 className="text-4xl font-bold mb-4">Real Estate Website Demo</h1>
-        <p className="text-lg text-gray-600">The "Choice Bot" widget is active in the bottom right corner.</p>
+        <h1 className="text-4xl font-bold mb-4">Website Demo</h1>
+        <p className="text-lg text-gray-600">The "Voice Bot" widget is active in the bottom right corner.</p>
       </div>
       <ChatWidget /> {/* This is the core of the page, it renders the ChatWidget. In this way, a custom React component within your JSX. 
       By simply including the component tag, all the logic and UI defined in ChatWidget.tsx are rendered at this position on the page. */}

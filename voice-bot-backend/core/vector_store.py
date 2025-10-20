@@ -1,8 +1,8 @@
 # file: core/vector_store.py
 
 import chromadb
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings
+from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import (
     PyPDFLoader,
@@ -46,7 +46,7 @@ client = chromadb.PersistentClient(path="./chroma_db_store")
 # Cons: Requires more operational knowledge and effort to manage, scale, and ensure high availability. 
 
 # Initialize the embedding model once to reuse across the application.
-embedding_function = HuggingFaceBgeEmbeddings(
+embedding_function = HuggingFaceEmbeddings(
     model_name = MODEL_NAME,
     model_kwargs = {"device": EMBEDDING_DEVICE}, # It is a dictionary that passes additional keyword arguments to the embedding model's initialization.
     encode_kwargs = {"normalize_embeddings": True}, # encode_kwargs is a dictionary that passes arguments to the encode method, which is called to generate the embeddings. 
