@@ -1,6 +1,6 @@
 # VOICE_Bot
 
-# CHOICE — RAG Voice Assistant (Choice Bot)
+# VOICE — RAG Voice Assistant (Voice Bot)
 
 [![Status](https://img.shields.io/badge/status-beta-yellow)](https://github.com/)
 [![Language](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/)
@@ -123,6 +123,7 @@ You can pre-ingest documents before starting the server (recommended for demo):
 python -c "from core import vector_store; vector_store.load_and_embed_documents('client_demo','./data/client_demo')"
 Or simply run the app which in __main__ may ingest automatically for demo client.
 
+
 Run the backend
 
 # from repo root, with venv activated
@@ -138,11 +139,12 @@ WebSocket chat endpoint: ws://localhost:8000/ws/{client_id} (example: client_dem
 WebSocket message format
 Client → Server
 
+
 Text query:
 
 {
   "type": "text_query",
-  "text": "Who is the founder of M3M ?"
+  "text": "What is the full form of AI ?"
 }
 Audio query (base64-encoded audio data):
 
@@ -163,7 +165,7 @@ Initial and subsequent responses:
 {
   "type": "response",
   "sender": "bot",
-  "text": "The founder of M3M is XYZ.",
+  "text": "AI stands for Artificial Intelligence",
   "audio_url": "/static_audio/response_en_123456789.mp3"
 }
 
@@ -185,11 +187,14 @@ No retrieved documents / poor answers
 
 Increase k in get_vector_retriever(client_id, k=...) or tweak embedding model. Confirm ingestion succeeded and that the collection name is client_<client_id>.
 
+
 Slow TTS
 
 We use gTTS + ffmpeg atempo to increase playback speed in memory. For production, consider cloud TTS providers (AWS Polly, Google TTS) for higher quality and SSML support.
 
+
 Scaling & production notes
+
 
 Move static_audio/ to S3 (or any object storage) and return signed URLs; this allows horizontal scaling and offloads static serving.
 
@@ -204,9 +209,13 @@ Add timeouts and retries around the LLM calls (Gemini/OpenAI).
 Contributing
 PRs welcome — please open issues for bugs or feature requests. Keep secrets out of the repo.
 
+
 License
 MIT License — see LICENSE file.
 
+
 Contact
+
 Abhishek — abhishek050505@gmail.com
-LinkedIn: https://www.linkedin.com/in/abhishek-400123169/
+
+LinkedIn: https://www.linkedin.com/in/abhishekdabas/
