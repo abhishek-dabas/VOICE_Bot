@@ -1,5 +1,3 @@
-# VOICE_Bot
-
 # VOICE — RAG Voice Assistant (Voice Bot)
 
 [![Status](https://img.shields.io/badge/status-beta-yellow)](https://github.com/)
